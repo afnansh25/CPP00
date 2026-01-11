@@ -10,9 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <iomanip>
-#include <string>
 #include "PhoneBook.hpp"
 
 PhoneBook::PhoneBook()
@@ -23,13 +20,18 @@ PhoneBook::PhoneBook()
 
 static bool get_input(const std::string &prompt, std::string &input)
 {
-    std::cout << prompt;
-    if (!std::getline(std::cin, input))
+    while (1)
     {
-        std::cout << std::endl;
-        return (false);
+        std::cout << prompt;
+        if (!std::getline(std::cin, input))
+        {
+            std::cout << std::endl;
+            return (false);
+        }
+        if (!input.empty())
+            return (true);
+        std::cout << "Error: field cannot be empty.\n";
     }
-    return (true);
 }
 
 static bool is_digits(const std::string &s)
@@ -62,22 +64,20 @@ void PhoneBook::addContact()
         return ;
     if (!get_input("Nickname: ", nick))
         return ;
-    if (!get_input("Phone number: ", phone))
-        return ;
-    if (!is_digits(phone))
+    
+    while (1)
     {
+        if (!get_input("Phone number: ", phone))
+            return ;
+        if (is_digits(phone))
+            break;
         std::cout << "Error: phone number must contain only digits.\n";
-        return ;
     }
+    
     if (!get_input("Darkest secret: ", secret))
         return ;
 
-    if (!_contacts[_index].setAll(first, last, nick, phone, secret))
-    {
-        std::cout << "Error: empty fields are not allowed.\n";
-        return ;
-    }
-
+    _contacts[_index].setAll(first, last, nick, phone, secret);
     _index = (_index + 1) % 8;
     if (_count < 8)
         _count++;
@@ -126,7 +126,10 @@ void PhoneBook::searchContacts() const
         return ;
     }
 
-    std::cout << "|     Index|First Name| Last Name|  Nickname|\n";
+    std::cout << "|" << std::setw(10) << "Index" << "|"
+              << std::setw(10) << "First Name" << "|"
+              << std::setw(10) << "Last Name" << "|"
+              << std::setw(10) << "Nickname" << "|\n";
     i = 0;
     while (i < _count)
     {

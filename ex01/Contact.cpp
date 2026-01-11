@@ -22,9 +22,6 @@ bool Contact::setAll(const std::string &first,
                      const std::string &phone,
                      const std::string &secret)
 {
-    if (first.empty() || last.empty() || nick.empty()
-        || phone.empty() || secret.empty())
-        return (false);
     _firstName = first;
     _lastName = last;
     _nickname = nick;
